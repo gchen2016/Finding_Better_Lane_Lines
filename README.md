@@ -22,7 +22,7 @@ The rest of the READ_ME will walk through the pipeline.
  
 When lenses on a camera filter light to capture an image, the light bends before it hits the film or sensor, causing distortions near the edges of the image. For example, see the top-right corner of the orignal chessboard image above. To deal with this, OpenCV has a useful set of tools that detect inner corners of a chessboard. Since chessboards have a uniform appearance in 3D reality, we can figure out where the corners should appear without distortions. Using the transform matrix for the chessboards, every image taken by the camera can be undistorted. This preprocessing step can be done for any image as long as we have the camera and take some pictures of chessboards on a flat surface (about 20 is recommended).
 
-### 3) Detect Lane Edges
+### 2) Detect Lane Edges
 <figure>
  <img src="readme_images/example3.png"/>
 </figure>
@@ -41,26 +41,26 @@ Below are the four binary images created from the original image above before be
 </figure>
  <p></p>
  
- ### 4) Bird's-eye View
+ ### 3) Bird's-eye View
  <figure>
  <img src="readme_images/example5.png"/>
 </figure>
  <p></p>
 To mask irrelevant parts of the image and to better represent lane line farther down the road, making it easier to detect the curve of the lane, each image is transformed to look like it was taken from a bird's-eye view. The vertices are found manually using a stretch of straight road in the video.
 
-### 5) Fit Polynomials to Lane Lines
+### 4) Fit Polynomials to Lane Lines
  <figure>
  <img src="readme_images/example6.png"/>
 </figure>
  <p></p>
-This is the most involved step. I walk through it in detail in the notes in the code. Everything happens within the 'draw_lane_lines' function. Basically, using the the coordinates of white pixels detected within the sliding green windows shown above, a second-order polynomial curve is fit with the following equation:
+This is the most involved step. I walk through it in detail in the notes in the code. Everything happens within the 'draw_lane_lines' function. Basically, using the coordinates of white pixels detected within the sliding green windows shown above, a second-order polynomial curve is fit with the following equation:
  <figure>
  <img src="readme_images/example10.png"/>
 </figure>
  <p></p>
 Actually, I use a moving average of the polynomial coefficients calculated over the previous 15 frames to help smooth the curve.
 
- ### 6) Calculate Radius of Curve and Distance from Lane Center
+ ### 5) Calculate Radius of Curve and Distance from Lane Center
 After fitting the polynomial, a mask is created highlighting the lane in green and lane edges in red. That mask is unwarped from a bird's-eye perspective to the original perspective and then added over the original image. Finally, the radius of the curve is calculated for each line. I take the mean of those to find the current frame's radius of the curve. 
 
 The radius of the curve is defined by the following equation:
