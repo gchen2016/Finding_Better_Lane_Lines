@@ -12,7 +12,7 @@ Clone the repository and run it yourself on 'project_video.mp4' with: **python a
 
 Or run it on 'challenge_video.mp4' with: **python advanced_lane_lines.py challenge**
 
-The rest of the READ_ME will walk through the pipeline.
+The rest of the README will walk through the pipeline.
 
 ### 1) Calibrate Camera
 <figure>
