@@ -78,9 +78,23 @@ The radius of the curve is defined by the following equation:
 The Udacity Self-Driving Car team linked to this [website](https://www.intmath.com/applications-differentiation/8-radius-curvature.php), which has a great step-by-step walkthrough of the proof, if you're into that sort of thing.
  
 I also calculate the car's distance from the lane center. Assuming the camera is mounted on the center of the hood, the middle of the image indicates the middle of the car. I get the distance from the lane center by subtracting the distance from the car's center to one lane line from the distance from the car's center to the other lane line, then dividing by two because an inch gained in one direction is an inch lossed in the other.
- 
+
 Here's a screen shot of my results from the curve in the challenge video that caused the most issues:
  <figure>
  <img src="readme_images/example7.png"/>
 </figure>
  <p></p>
+
+### 6) Still Room for Improvement
+Okay, not too bad. But there are a obvious limitations to the current algorithm. For example, take a loot at this picture:
+ <figure>
+ <img src="readme_images/example11.png"/>
+</figure>
+ <p></p>
+With our current setup, there's no way to account for sharp turns like this, when the camera loses one of the lane lines for several frames. A similar problem arises when glare from the sun is so bright that the camera effectively loses sight of the lane line for several frames. One way to deal with this could be to use cameras mounted on the sides of the car and combine all three images to give a more panoramic view. 
+
+But what about when lane lines have completely disappeared for long stretches, such as after a snowy winter when excessive plowing has stripped the paint from the road? Human intuition can approximate where the lines ought to be, so this doesn't pose a problem for us sentient drivers. In a similar vein, as long as the algorithm can detect one lane line, it could approximate where the other line should be for these stretches by assuming the lane width of any given road is relatively uniform and extrapolating the position of the missing line from the present one.
+
+In other words, as always, there's still work to do...
+
+
