@@ -53,8 +53,8 @@ def calibrate_cam(direct, nx=9, ny=6, plot=False):
 check_direct = 'camera_cal/calibration*.jpg'
 mtx, dist, rvecs, tvecs = calibrate_cam(check_direct)
 
-def undistort(img, mtx=mtx, dist=dist):
-    return cv2.undistort(img, mtx, dist, None, mtx)
+def undistort(img, m=mtx, d=dist):
+    return cv2.undistort(img, m, d, None, mtx)
 
 # Transform each image to bird's-eye view. The vertices are found manually using a stretch of straight road in the video.
 # The vertices change depending on the 'which_video' argument  because a slightly longer stretch of lane, 15 pixels, looks
@@ -130,8 +130,9 @@ radii = []
 # Combine above functions to create a binary image from bird's-eye view. 
 def draw_lane_lines(orig_img):
     mv_avg = 15
-    undistort_img = cv2.GaussianBlur(undistort(orig_img), (5, 5), 0)
-    grads_img = combined_grads(undistort_img)
+    undistort_img = undistort(orig_img)
+    blur = cv2.GaussianBlur(undistort_img, (5, 5), 0)
+    grads_img = combined_grads(blur)
     binary_warped = birds_eye(grads_img)[:,:,0]
     
     # The base points of the curves of each frame are found by the average position of white pixels in the bottom 
@@ -212,11 +213,12 @@ def draw_lane_lines(orig_img):
                                 np.nanmean(r_b[-mv_avg:])*plot_y + 
                                 np.nanmean(r_c[-mv_avg:]), dtype=np.int))
     
-    # Approximate how many meters make up a pixel in x and y directions. Find radius of curve based on last set of 
-    # confidently detected x and y values. Caclulate moving average of radius with the past 15 frames to print over
+    # Approximate meters per pixel in the y direction, assuming the length of the highlighted lane is 30 meters.
+    # Calculate in x direction, assuming lane width is 3.7 meters. Find radius of curve based on last set of 
+    # confidently detected x and y values. Caclulate moving average of radius with the past 15 frames to print over 
     # the video.
     ym_per_pix = 30/720.
-    xm_per_pix = 3.7/821.
+    xm_per_pix = 3.7/(right_fit_x[0] - left_fit_x[0])
     y_eval = binary_warped.shape[0]    
     left_x_wrld = left_xs[-1]
     left_y_wrld = left_ys[-1]
@@ -244,7 +246,7 @@ def draw_lane_lines(orig_img):
     
     # Convert to original perspective and add overlay to original.
     overlay_unbirded = birds_eye(overlay, inv=True)
-    orig_with_lanes = cv2.addWeighted(orig_img, 0.6, overlay_unbirded, 0.25, 0.15)
+    orig_with_lanes = cv2.addWeighted(undistort_img, 1.0, overlay_unbirded, 0.33, 0)
     
     # Print out the radius of the curve, the car's distance from the center of the lane, and a line indicating the 
     # car's center over the frame.
