@@ -86,7 +86,7 @@ Here's a screen shot of my results from the curve in the challenge video that ca
  <p></p>
 
 ### 6) Still Room for Improvement
-Okay, not too bad. But there are a obvious limitations to the current algorithm. For example, take a loot at this picture:
+Okay, not too bad. But there are a obvious limitations to the current algorithm. For example, take a look at this picture:
  <figure>
  <img src="readme_images/example11.png"/>
 </figure>
